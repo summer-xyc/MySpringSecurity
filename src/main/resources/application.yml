@@ -1,0 +1,42 @@
+server:
+  port: 9090
+  tomcat:
+    uri-encoding: utf-8
+
+spring:
+  application:
+    name: spring-security
+  datasource:
+    url: jdbc:mysql://106.15.249.31:3306/springBootJpa?characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+
+  #mybatis  配置信息
+  #mybatis:
+ # mapper-locations: classpath*:mybatis/mappers/**/*.xml
+  #type-aliases-package: com.galen.security.pojo
+
+#pagehelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: false #禁用合理化,pageNum>pages会返回空数据
+  supportMethodsArguments: true
+  params: count=countSql
+
+#日志输出配置
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.galen.security.mapper: DEBUG
+
+
+
