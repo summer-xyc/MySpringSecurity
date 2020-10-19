@@ -27,19 +27,31 @@ public interface UserSecurityMapper extends JpaRepository<SysMenu, Long> {
             " order by  m.id desc ")
     List<SecuritySysPermission> findAllPermission();
 
-    @Query(value = " select  m1.id,m1.path,m1.component,m1.icon_pic,m1.title,m1.title_en,m1.parent_id,m1.request_url,m1.sort_order, " +
-            "        m2.id as id2,m2.path as path2,m2.component as component2,m2.icon_pic as icon_pic2,m2.title as title2,  " +
-            "        m2.title_en as title_en2,m2.parent_id as parent_id2,m2.request_url as request_url2,m2.sort_order as sort_order2 " +
+    @Query(value = " select  new com.summer.security.pojo.SecuritySysMenu(m1.id,m1.path,m1.component,m1.iconPic,m1.title,m1.titleEn,m1.parentId,m1.requestUrl,m1.sortOrder, " +
+            "        m2.id as id2,m2.path as path2,m2.component as component2,m2.iconPic as icon_pic2,m2.title as title2,  " +
+            "        m2.titleEn as title_en2,m2.parentId as parent_id2,m2.requestUrl as request_url2,m2.sortOrder as sort_order2 ) " +
             "        from  SysMenu m1, SysMenu m2  where m1.enabled=true " +
             "        and m2.enabled=true " +
-            "        and m1.menu_type=1 " +
-            "        and m2.menu_type=1 " +
-            "        and m1.id=m2.parent_id " +
+            "        and m1.menuType=1 " +
+            "        and m2.menuType=1 " +
+            "        and m1.id=m2.parentId " +
             "        and m2.id in " +
-            "        (select mr.menu_id from sys_user_role u_r,sys_menu_role mr where u_r.role_id=mr.role_id and " +
-            "        u_r.user_id=#{userId}) " +
-            "        order by m1.sort_order,m2.sort_order")
+            "        (select mr.menuId from SysUserRole u_r,SysMenuRole mr where u_r.roleId=mr.roleId and " +
+            "        u_r.userId= :userId) " +
+            "        order by m1.sortOrder,m2.sortOrder")
     List<SecuritySysMenu> findMenuByUid(Long userId);
+
+
+    @Query(value = "select " +
+            "        m.elementId " +
+            "        from SysMenu m " +
+            "        where m.menuType=2 " +
+            "        and m.parentId = :menuId " +
+            "        and m.id in " +
+            "        (select mr.menuId from SysUserRole u_r,SysMenuRole mr where u_r.roleId=mr.roleId and " +
+            "        u_r.userId= :userId) " +
+            "        order by m.sortOrder")
+    List<String> findButtonElementIdByUid(Long userId,Long menuId);
 
 }
 

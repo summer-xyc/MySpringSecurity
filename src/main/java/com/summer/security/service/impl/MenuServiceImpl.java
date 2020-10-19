@@ -15,9 +15,13 @@ import com.summer.security.utils.IdUtil;
 import com.summer.security.utils.ResponseUtils;
 import com.summer.security.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -135,8 +139,8 @@ public class MenuServiceImpl implements MenuService {
         if (null == userId) {
             return ResponseUtils.invalid();
         }
-        List<SecuritySysMenu> securitySysMenuList = userSecurityMapper.getMenuByUid(userId);
-        userSecurityMapper.
+//        List<SecuritySysMenu> securitySysMenuList = userSecurityMapper.getMenuByUid(userId);
+        List<SecuritySysMenu> securitySysMenuList = userSecurityMapper.findMenuByUid(userId);
         return ResponseUtils.SUCCESS(securitySysMenuList);
     }
 
@@ -146,7 +150,8 @@ public class MenuServiceImpl implements MenuService {
         if (null == userId) {
             return ResponseUtils.invalid();
         }
-        List<String> buttonIdList = userSecurityMapper.getButtonElementIdByUid(userId, menuId);
+//        List<String> buttonIdList = userSecurityMapper.getButtonElementIdByUid(userId, menuId);
+        List<String> buttonIdList = userSecurityMapper.findButtonElementIdByUid(userId, menuId);
         return ResponseUtils.SUCCESS(buttonIdList);
     }
 
@@ -156,10 +161,22 @@ public class MenuServiceImpl implements MenuService {
         if (null == userId) {
             return ResponseUtils.invalid();
         }
-        PageHelper.startPage(pageBegin, pageSize);
+        PageRequest pageRequest = PageRequest.of(pageBegin, pageSize);
+
+        Specification<SysMenuMapper> specification =(Specification<SysMenuMapper>) (root, quest, criteriaBuilder) -> {
+            List<Predicate> list = new ArrayList<>();
+            Predicate p1 = criteriaBuilder.equal(root.get("userId"),userId);
+            list.add(p1);
+            return criteriaBuilder.and(list.toArray(new Predicate[0]));
+        };
+
+
+       /* PageHelper.startPage(pageBegin, pageSize);
         sourceList = sysMenuMapper.getSysMenuList(userId);
-        PageInfo pageInfo = new PageInfo(sourceList);
-        return ResponseUtils.SUCCESS(sourceList, pageInfo.getTotal());
+        PageInfo pageInfo = new PageInfo(sourceList);*/
+        sysMenuMapper.findAll(specification,pageRequest);
+
+        return ResponseUtils.SUCCESS(sourceList,);
     }
 
     @Override

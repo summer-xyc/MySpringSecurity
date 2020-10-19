@@ -1,5 +1,7 @@
 package com.summer.security.pojo;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  * @author wcyong
  * @date 2019-04-18
  */
+@Data
 public class SecuritySysMenu {
     /**
      * 主键
@@ -63,6 +66,34 @@ public class SecuritySysMenu {
      * 菜单的排序
      */
     private Integer sortOrder;
+
+
+
+    public SecuritySysMenu(Long id, String path, String component, String iconPic, String title, String titleEn, Long parentId, String requestUrl, Integer sortOrder,
+                           Long id2, String path2, String component2, String icon_pic2, String title2,
+                           String title_en2, Long parent_id2, String request_url2, Integer sort_order2) {
+        this.id =id;
+        this.path = path;
+        this.component =component;
+        this.iconPic = iconPic;
+        this.title =title;
+        this.titleEn = titleEn;
+        this.parentId = parentId;
+        this.requestUrl =requestUrl;
+        this.sortOrder =sortOrder;
+        SecuritySysMenu securitySysMenu = new SecuritySysMenu();
+        securitySysMenu.id =id2;
+        securitySysMenu.path = path2;
+        securitySysMenu.component =component2;
+        securitySysMenu.iconPic = icon_pic2;
+        securitySysMenu.title =title2;
+        securitySysMenu.titleEn = title_en2;
+        securitySysMenu.parentId = parent_id2;
+        securitySysMenu.requestUrl =request_url2;
+        securitySysMenu.sortOrder =sort_order2;
+        this.children.add(securitySysMenu);
+    }
+
 
     private List<SecuritySysMenu> children;
 

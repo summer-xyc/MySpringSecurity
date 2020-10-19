@@ -2,11 +2,12 @@ package com.summer.security.mapper;
 
 import com.summer.security.model.SysMenu;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SysMenuMapper extends JpaRepository<SysMenu,Long> {
+public interface SysMenuMapper extends JpaRepository<SysMenu,Long> , JpaSpecificationExecutor<SysMenuMapper> {
 
   /*  void deleteById(Long id);*/
 
