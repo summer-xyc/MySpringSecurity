@@ -1,8 +1,9 @@
 package com.summer.security.controller;
 
-import com.galen.security.pojo.GalenResponse;
-import com.galen.security.pojo.RespBean;
-import com.galen.security.utils.ResponseUtils;
+
+import com.summer.security.pojo.RespBean;
+import com.summer.security.pojo.Response;
+import com.summer.security.utils.ResponseUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +26,14 @@ public class LoginController {
 
     @ApiOperation(value = "swagger端测试注销入口")
     @PostMapping("/logout")
-    public GalenResponse logout() {
+    public Response logout() {
         System.out.println("注销成功!");
         return ResponseUtils.SUCCESS("注销成功!");
     }
 
     @ApiOperation(value = "提示跳转到登录页面")
     @GetMapping("/login_p")
-    public GalenResponse loginP() {
+    public Response loginP() {
         return ResponseUtils.invalid();
     }
 

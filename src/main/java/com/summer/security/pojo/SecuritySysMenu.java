@@ -67,7 +67,7 @@ public class SecuritySysMenu {
      */
     private Integer sortOrder;
 
-
+    public SecuritySysMenu(){};
 
     public SecuritySysMenu(Long id, String path, String component, String iconPic, String title, String titleEn, Long parentId, String requestUrl, Integer sortOrder,
                            Long id2, String path2, String component2, String icon_pic2, String title2,

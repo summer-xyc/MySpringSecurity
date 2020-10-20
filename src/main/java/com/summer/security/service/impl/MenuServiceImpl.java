@@ -16,6 +16,7 @@ import com.summer.security.utils.ResponseUtils;
 import com.summer.security.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -163,20 +164,15 @@ public class MenuServiceImpl implements MenuService {
         }
         PageRequest pageRequest = PageRequest.of(pageBegin, pageSize);
 
-        Specification<SysMenuMapper> specification =(Specification<SysMenuMapper>) (root, quest, criteriaBuilder) -> {
+        /*Specification<SysMenu> specification = (Specification<SysMenu>) (root, quest, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
-            Predicate p1 = criteriaBuilder.equal(root.get("userId"),userId);
+            Predicate p1 = criteriaBuilder.equal(root.get("userId"), userId);
             list.add(p1);
             return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
-
-
-       /* PageHelper.startPage(pageBegin, pageSize);
-        sourceList = sysMenuMapper.getSysMenuList(userId);
-        PageInfo pageInfo = new PageInfo(sourceList);*/
-        sysMenuMapper.findAll(specification,pageRequest);
-
-        return ResponseUtils.SUCCESS(sourceList,);
+        Page<SysMenu> sysMenus = sysMenuMapper.findAll(specification, pageRequest);*/
+        Page<SysMenu> sysMenuList = sysMenuMapper.findSysMenuList(userId);
+        return ResponseUtils.SUCCESS(sysMenuList.getContent(), sysMenuList.getTotalPages());
     }
 
     @Override
@@ -185,7 +181,8 @@ public class MenuServiceImpl implements MenuService {
         if (null == userId) {
             return ResponseUtils.invalid();
         }
-        sourceList = sysMenuMapper.getSysMenuList(userId);
+//        sourceList = sysMenuMapper.getSysMenuList(userId);
+        sourceList = sysMenuMapper.findSysMenuList(userId).getContent();
         return ResponseUtils.SUCCESS(arrangeToTree());
     }
 
@@ -195,8 +192,10 @@ public class MenuServiceImpl implements MenuService {
         if (null == userId) {
             return ResponseUtils.invalid();
         }
-        List<Long> roleMenuId = sysMenuMapper.getSysMenuIdListByRoleId(roleId);
-        sourceList = sysMenuMapper.getSysMenuList(userId);
+//        List<Long> roleMenuId = sysMenuMapper.getSysMenuIdListByRoleId(roleId);
+        List<Long> roleMenuId = sysMenuMapper.findSysMenuIdListByRoleId(roleId);
+//        sourceList = sysMenuMapper.getSysMenuList(userId);
+        sourceList = sysMenuMapper.findSysMenuList(userId).getContent();
         for (SysMenu sysMenu : sourceList) {
             if (roleMenuId.contains(sysMenu.getId())) {
                 sysMenu.setOnChoose(true); //属于此角色
@@ -206,7 +205,6 @@ public class MenuServiceImpl implements MenuService {
     }
 
     /**
-     * @Author: Galen
      * @Description: 规整为树形结构
      * @Date: 2019/4/25-9:58
      * @Param: [list]
@@ -269,7 +267,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Response getRoleSysMenuList(Long roleId) {
-        List<SysMenu> sysMenuList = sysMenuMapper.getSysMenuListByRoleId(roleId);
+        List<SysMenu> sysMenuList = sysMenuMapper.findSysMenuListByRoleId(roleId);
         return ResponseUtils.SUCCESS(sysMenuList);
     }
 
@@ -280,14 +278,18 @@ public class MenuServiceImpl implements MenuService {
          * @Author: Galen
          * @Description: 删除此菜单和角色的关联
          **/
-        SysMenuRole sysMenuRole = sysMenuRoleMapper.selectByMidPid(roleId, menuId);
+//        SysMenuRole sysMenuRole = sysMenuRoleMapper.selectByMidPid(roleId, menuId);
+        SysMenuRole sysMenuRole = sysMenuRoleMapper.findByRoleIdAndMenuId(roleId, menuId);
         if (null != sysMenuRole) {
-            sysMenuRoleMapper.deleteByPrimaryKey(sysMenuRole.getId());
+//            sysMenuRoleMapper.deleteByPrimaryKey(sysMenuRole.getId());
+            sysMenuRoleMapper.delete(sysMenuRole);
+
             /**
              * @Author: Galen
              * @Description: 同时删除此菜单的子菜单和角色的关联
              **/
-            sysMenuRoleMapper.deleteByParentId(roleId, menuId);
+//            sysMenuRoleMapper.deleteByParentId(roleId, menuId);
+            sysMenuRoleMapper.deleteByRoleIdAndAndMenuId(roleId,menuId);
         }
         return ResponseUtils.SUCCESS("移除成功！");
     }
@@ -295,7 +297,8 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public Response removeSysMenu(Long menuId) {
-        SysMenu sysMenu = sysMenuMapper.selectByPrimaryKey(menuId);
+//        SysMenu sysMenu = sysMenuMapper.selectByPrimaryKey(menuId);
+        SysMenu sysMenu = sysMenuMapper.findById(menuId).get();
         if (null == sysMenu) {
             //防止多次点击
             return ResponseUtils.SUCCESS("移除成功！");
@@ -304,12 +307,13 @@ public class MenuServiceImpl implements MenuService {
          * @Author: Galen
          * @Description: 把子菜单的parentId改为 此菜单的parentId，实现所有菜单往上移动一层级
          **/
-        sysMenuMapper.updateParentId(sysMenu);
+        sysMenuMapper.updateParentId(sysMenu.getParentId(),sysMenu.getId());
         /**
          * @Author: Galen
          * @Description: 删除这个菜单
          **/
-        sysMenuMapper.deleteByPrimaryKey(menuId);
+//        sysMenuMapper.deleteByPrimaryKey(menuId);
+        sysMenuMapper.delete(sysMenu);
         /**
          * @Author: Galen
          * @Description: 移除关联数据

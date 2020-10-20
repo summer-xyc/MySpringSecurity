@@ -1,9 +1,10 @@
 package com.summer.security.controller;
 
-import com.galen.security.pojo.GalenResponse;
-import com.galen.security.service.RoleService;
-import com.galen.security.utils.ResponseUtils;
+
 import com.github.pagehelper.util.StringUtil;
+import com.summer.security.pojo.Response;
+import com.summer.security.service.RoleService;
+import com.summer.security.utils.ResponseUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class RoleController {
 
     @ApiOperation("增加角色")
     @PostMapping("create")
-    public GalenResponse createRole(String nameEn, String nameCn) {
+    public Response createRole(String nameEn, String nameCn) {
         if (StringUtil.isEmpty(nameEn)) {
             return ResponseUtils.FAIL("请传入角色名");
         }
@@ -34,7 +35,7 @@ public class RoleController {
 
     @ApiOperation("修改角色属性")
     @PostMapping("modify")
-    public GalenResponse modifyRole(Long roleId, String nameEn, String nameCn) {
+    public Response modifyRole(Long roleId, String nameEn, String nameCn) {
         if (null == roleId) {
             return ResponseUtils.FAIL("请传入角色id");
         }
@@ -49,7 +50,7 @@ public class RoleController {
 
     @ApiOperation("添加用户为xxx角色")
     @PostMapping("add/to")
-    public GalenResponse addToRole(Long userId, Long roleId) {
+    public Response addToRole(Long userId, Long roleId) {
         if (null == userId || null == roleId) {
             return ResponseUtils.build(401, "error");
         }
@@ -58,13 +59,13 @@ public class RoleController {
 
     @ApiOperation("查看所有系统角色（管理员才可以查看）")
     @GetMapping("list/all/get")
-    public GalenResponse getAllSysRoleList() {
+    public Response getAllSysRoleList() {
         return roleService.getAllSysRoleList();
     }
 
     @ApiOperation("查看系统角色，不包含独立角色（管理员才可以查看）")
     @GetMapping("list/get")
-    public GalenResponse getSysRoleList(Long userId) {
+    public Response getSysRoleList(Long userId) {
         if (null == userId) {
             return roleService.getSysRoleList();
         }
@@ -73,7 +74,7 @@ public class RoleController {
 
     @ApiOperation("查看xx用户的角色列表")
     @GetMapping("list/user/get")
-    public GalenResponse getUserSysRoleList(Long userId) {
+    public Response getUserSysRoleList(Long userId) {
         if (null == userId) {
             return ResponseUtils.build(401, "错误");
         }
@@ -82,7 +83,7 @@ public class RoleController {
 
     @ApiOperation("移除xx用户的一个角色")
     @PostMapping("/user/remove")
-    public GalenResponse removeUserSysRole(Long userId, Long roleId) {
+    public Response removeUserSysRole(Long userId, Long roleId) {
         if (null == userId || null == roleId) {
             return ResponseUtils.build(401, "错误");
         }
@@ -91,7 +92,7 @@ public class RoleController {
 
     @ApiOperation("移除一个角色")
     @PostMapping("/remove")
-    public GalenResponse removeSysRole(Long roleId) {
+    public Response removeSysRole(Long roleId) {
         if (null == roleId) {
             return ResponseUtils.build(401, "错误");
         }

@@ -5,7 +5,9 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * 菜单表
@@ -13,7 +15,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sys_menu")
 @Data
-public class SysMenu {
+public class SysMenu implements Cloneable{
+
+    @Override
+    public Object clone() {
+        SysMenu sysMenu;
+        try {
+            sysMenu = (SysMenu) super.clone();
+            return sysMenu;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * 主键
@@ -80,4 +94,9 @@ public class SysMenu {
      * 角色选择（前端使用）
      */
     private Boolean onChoose;
+
+
+    @OneToMany(targetEntity = SysMenu.class)
+    private List<SysMenu> children;
+
 }
