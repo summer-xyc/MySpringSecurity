@@ -10,13 +10,13 @@ import java.util.List;
 @Repository
 public interface SysUserRoleMapper extends JpaRepository<SysUserRole,Long> {
 
-    SysUserRole findByRoleIdaAndUserId(Long RoleIda,Long UserId);
+    SysUserRole findByRoleIdAndUserId(Long RoleId,Long UserId);
 
 
 //    SysUserRole findByRoleIdaAndUserId(Long RoleId,Long UserId);
 //    @Query(value = " select u.id from Sys")
 //    List<Long> findUserByRid(Long roleId);
 
-    List<SysUserRole> findAllByRAndRoleId(Long RoleId);
+    List<SysUserRole> findAllByRoleId(Long RoleId);
 
 }

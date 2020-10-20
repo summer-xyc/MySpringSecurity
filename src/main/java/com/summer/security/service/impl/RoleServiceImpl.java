@@ -105,7 +105,7 @@ public class RoleServiceImpl implements RoleService {
             return ResponseUtils.build(502, "角色不存在");
         }
 //        SysUserRole sysUserRole = sysUserRoleMapper.selectByUidRid(userId, roleId);
-        SysUserRole sysUserRole = sysUserRoleMapper.findByRoleIdaAndUserId(roleId,userId);
+        SysUserRole sysUserRole = sysUserRoleMapper.findByRoleIdAndUserId(roleId,userId);
         if (null != sysUserRole) {
             return ResponseUtils.SUCCESS(sysUserRole.getId());
         }
@@ -188,7 +188,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Response removeUserSysRole(Long userId, Long roleId) {
 //        SysUserRole sysUserRole = sysUserRoleMapper.selectByUidRid(userId, roleId);
-        SysUserRole sysUserRole = sysUserRoleMapper.findByRoleIdaAndUserId(roleId,userId);
+        SysUserRole sysUserRole = sysUserRoleMapper.findByRoleIdAndUserId(roleId,userId);
         if (null != sysUserRole) {
 //            sysUserRoleMapper.deleteByPrimaryKey(sysUserRole.getId());
             sysUserRoleMapper.delete(sysUserRole);
@@ -218,7 +218,7 @@ public class RoleServiceImpl implements RoleService {
          * @Description: 删除此角色与用户的关联（防止存在脏数据）
          **/
 //        sysUserRoleMapper.deleteByRoleId(roleId);
-        sysUserRoleMapper.deleteAll(sysUserRoleMapper.findAllByRAndRoleId(roleId));
+        sysUserRoleMapper.deleteAll(sysUserRoleMapper.findAllByRoleId(roleId));
         /**
          * @Author: Galen
          * @Description: 删除此角色与菜单的关联（防止存在脏数据）

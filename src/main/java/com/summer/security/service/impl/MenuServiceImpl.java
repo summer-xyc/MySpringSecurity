@@ -171,7 +171,7 @@ public class MenuServiceImpl implements MenuService {
             return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
         Page<SysMenu> sysMenus = sysMenuMapper.findAll(specification, pageRequest);*/
-        Page<SysMenu> sysMenuList = sysMenuMapper.findSysMenuList(userId);
+        Page<SysMenu> sysMenuList = sysMenuMapper.findSysMenuList(userId,pageRequest);
         return ResponseUtils.SUCCESS(sysMenuList.getContent(), sysMenuList.getTotalPages());
     }
 
@@ -182,7 +182,8 @@ public class MenuServiceImpl implements MenuService {
             return ResponseUtils.invalid();
         }
 //        sourceList = sysMenuMapper.getSysMenuList(userId);
-        sourceList = sysMenuMapper.findSysMenuList(userId).getContent();
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        sourceList = sysMenuMapper.findSysMenuList(userId,pageRequest).getContent();
         return ResponseUtils.SUCCESS(arrangeToTree());
     }
 
@@ -195,7 +196,8 @@ public class MenuServiceImpl implements MenuService {
 //        List<Long> roleMenuId = sysMenuMapper.getSysMenuIdListByRoleId(roleId);
         List<Long> roleMenuId = sysMenuMapper.findSysMenuIdListByRoleId(roleId);
 //        sourceList = sysMenuMapper.getSysMenuList(userId);
-        sourceList = sysMenuMapper.findSysMenuList(userId).getContent();
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        sourceList = sysMenuMapper.findSysMenuList(userId,pageRequest).getContent();
         for (SysMenu sysMenu : sourceList) {
             if (roleMenuId.contains(sysMenu.getId())) {
                 sysMenu.setOnChoose(true); //属于此角色

@@ -2,6 +2,7 @@ package com.summer.security.mapper;
 
 import com.summer.security.model.SysMenu;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +27,7 @@ public interface SysMenuMapper extends JpaRepository<SysMenu, Long>, JpaSpecific
             "        u_r.user_id= :userId )\n" +
             "        order by id \n" +
             "        ", nativeQuery = true)
-    Page<SysMenu> findSysMenuList(Long userId);
+    Page<SysMenu> findSysMenuList(Long userId, Pageable pageable);
 
 
     @Query(value = "select  distinct  m.id from  sys_menu m left join sys_menu_role mr on m.id = mr.menu_id " +
